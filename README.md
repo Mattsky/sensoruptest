@@ -8,6 +8,8 @@ This project contains all required resources to Dockerise both the React fronten
 
 ## Building the frontend container
 
+From the base directory:
+
     cd frontend
     docker build -t react_frontend $(for i in `cat .env.frontend`; do out+="--build-arg $i " ; done; echo $out;out="") .
 
