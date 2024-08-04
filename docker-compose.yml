@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  react_frontend:
+    build:
+      context: ./frontend
+      args:
+        - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
+    ports:
+      - 80:80
+    depends_on: 
+      - express_backend
+       
+  express_backend:
+    build:
+      context: ./backend
+      args:
+        - EXPRESS_PORT=${EXPRESS_PORT}
+    ports:
+      - ${EXPRESS_PORT}:${EXPRESS_PORT}

@@ -1,0 +1,62 @@
+name: Build and deploy project to Docker Hub
+  
+on:
+ push:
+   branches:
+     - main
+
+jobs:
+
+ build:
+   runs-on: 'ubuntu-latest'
+
+   steps:
+   - name: Checkout code
+     uses: actions/checkout@v2
+
+   - name: Compute short SHA var
+     id: vars
+     run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+   - name: Build frontend image
+     run: |
+       cd frontend && docker build -t mattski/sensorup_fe:${{ steps.vars.outputs.short_sha }} $(for i in `cat .env.frontend`; do out+="--build-arg $i " ; done; echo $out;out="") .
+
+   - name: Build backend image
+     run: |
+       cd backend && docker build -t mattski/sensorup_be:${{ steps.vars.outputs.short_sha }} $(for i in `cat .env.backend`; do out+="--build-arg $i " ; done; echo $out;out="") .
+
+   - name: Run Trivy vulnerability scanner on frontend image
+     uses: aquasecurity/trivy-action@0.20.0
+     with:
+       image-ref: 'mattski/sensorup_fe:${{ steps.vars.outputs.short_sha }}'
+       format: 'table'
+       exit-code: '1'
+       ignore-unfixed: true
+       vuln-type: 'os,library'
+       severity: 'CRITICAL,HIGH'
+
+   - name: Run Trivy vulnerability scanner on backend image
+     uses: aquasecurity/trivy-action@0.20.0
+     with:
+       image-ref: 'mattski/sensorup_be:${{ steps.vars.outputs.short_sha }}'
+       format: 'table'
+       exit-code: '1'
+       ignore-unfixed: true
+       vuln-type: 'os,library'
+       severity: 'CRITICAL,HIGH'
+
+   - name: Log in to Docker Hub - Main web app container registry
+     uses: docker/login-action@v2
+     with:
+       username: ${{ secrets.USERNAME }}
+       password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+   - name: Push frontend image
+     run: |
+       docker push mattski/sensorup_fe:${{ steps.vars.outputs.short_sha }}
+
+   - name: Push backend image
+     run: |
+       docker push mattski/sensorup_be:${{ steps.vars.outputs.short_sha }}
+
