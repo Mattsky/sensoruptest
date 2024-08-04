@@ -13,7 +13,7 @@ This project contains all required resources to Dockerise both the React fronten
 
 ### Frontend code modifications
 
-- N/A
+- The code uses `process.env.REACT_APP_BACKEND_URL` to find the Express backend. However, this only works if the application is being run in a Node environment and the application here is statically compiled so this will not work at runtime. To get around this, we use the below variable to change the value and ensure comms between containers work as intended.
 
 ## Frontend container build time environment variables
 
