@@ -4,7 +4,7 @@ Matt North, August 2024
 
 ## Overview
 
-This project contains all required resources to Dockerise both the React frontend and Express backend components of a simple webapp, that allows adding, editing and deletion of arbitrary key / value pairs. Complete builds of these two containers are available at mattski/sensorup_fe and mattski/sensorup_be , with the frontend container using the standard port 80 for Nginx and the backend using port 3000 for the Express application.
+This project contains all required resources to Dockerise both the React frontend and Express backend components of a simple webapp, that allows adding, editing and deletion of arbitrary key / value pairs. Complete builds of these two containers are available at [mattski/sensorup_fe](https://hub.docker.com/repository/docker/mattski/sensorup_fe) and [mattski/sensorup_be](https://hub.docker.com/repository/docker/mattski/sensorup_be) , with the frontend container using the standard port 80 for Nginx and the backend using port 3000 for the Express application.
 
 ## Building the frontend container
 
